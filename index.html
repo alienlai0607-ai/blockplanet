@@ -6,17 +6,16 @@
     
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#5a4632">
+    <meta name="theme-color" content="#ffffff">
 
-    <title>時空遺跡探測儀 (音效版)</title>
+    <title>時空遺跡探測儀 (FLL特別版)</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Special+Elite&display=swap" rel="stylesheet">
     
     <style>
-        /* ================= CSS 樣式區 (維持考古風格) ================= */
+        /* ================= CSS 樣式區 ================= */
         :root {
-            --sand-bg: #f4e4bc;
-            --parchment-light: #fdf6e3;
+            --parchment-light: rgba(253, 246, 227, 0.9); /* 稍微半透明的羊皮紙色 */
             --dirt-brown: #5a4632;
             --ancient-gold: #d4af37;
             --relic-red: #c0392b;
@@ -26,8 +25,6 @@
 
         body {
             font-family: 'Special Elite', 'Courier New', monospace;
-            background-color: var(--sand-bg);
-            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7z' fill='%238c6239' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
             color: var(--dirt-brown);
             margin: 0;
             padding: 15px;
@@ -35,15 +32,27 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
+
+            /* === 關鍵修改：背景圖片設定 === */
+            background-color: #ffffff; /* 圖片載入前的底色 */
+            background-image: url('bg.jpg'); /* 讀取您上傳的 bg.jpg */
+            background-size: cover; /* 讓圖片填滿整個螢幕 */
+            background-position: center bottom; /* 重點：對齊底部！讓下方的公仔露出來 */
+            background-repeat: no-repeat; /* 不要重複 */
+            background-attachment: fixed; /* 讓背景固定，滑動時才不會跑掉 */
         }
 
         header {
             text-align: center;
             margin-bottom: 20px;
-            border-bottom: 3px double var(--brass-border);
-            padding-bottom: 15px;
-            width: 100%;
+            /* 為了讓標題在背景圖上更清楚，加一點背板 */
+            background: rgba(255, 255, 255, 0.8); 
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: 2px solid var(--brass-border);
+            width: 90%;
             max-width: 450px;
+            margin-top: 10px;
         }
 
         h1 {
@@ -60,15 +69,19 @@
         }
 
         .dashboard {
+            /* 這裡設定半透明，讓背景圖可以透出來一點點 */
             background: var(--parchment-light);
             border: 4px solid var(--brass-border);
-            border-radius: 10px;
-            box-shadow: inset 0 0 10px rgba(90, 70, 50, 0.5), 0 5px 15px rgba(0,0,0,0.3);
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
             padding: 20px;
             width: 90%;
             max-width: 400px;
             text-align: center;
             position: relative;
+            /* 稍微往上推一點，留空間給下面的可愛公仔 */
+            margin-bottom: 50px; 
+            backdrop-filter: blur(5px); /* 磨砂玻璃特效，增加質感 */
         }
 
         .dashboard::before, .dashboard::after {
@@ -84,7 +97,7 @@
 
         .status-badge {
             display: inline-block;
-            background: var(--sand-bg);
+            background: #fff;
             border: 2px dashed var(--brass-border);
             color: var(--dirt-brown);
             padding: 5px 15px;
@@ -99,12 +112,12 @@
             animation: pulse-gold 2s infinite;
         }
 
-        /* 音效開關按鈕 */
+        /* 音效按鈕 */
         .sound-toggle {
             position: absolute;
             top: 10px;
             right: 10px;
-            background: none;
+            background: rgba(255,255,255,0.5);
             border: 2px solid var(--dirt-brown);
             border-radius: 50%;
             width: 35px;
@@ -117,11 +130,7 @@
             color: var(--dirt-brown);
             transition: all 0.2s;
         }
-        .sound-toggle.muted {
-            opacity: 0.5;
-            background: #ccc;
-            border-color: #999;
-        }
+        .sound-toggle.muted { opacity: 0.5; background: #ccc; }
 
         .metrics-grid {
             display: grid;
@@ -131,7 +140,7 @@
         }
 
         .metric-box {
-            background: var(--parchment-light);
+            background: rgba(255,255,255,0.6);
             padding: 10px;
             border-radius: 50%;
             border: 3px solid var(--brass-border);
@@ -140,7 +149,6 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
 
         .metric-value {
@@ -184,7 +192,7 @@
 
         .btn-main {
             background: var(--dirt-brown);
-            color: var(--parchment-light);
+            color: #fff;
             border: 3px solid var(--brass-border);
             padding: 12px 20px;
             font-size: 1rem;
@@ -203,14 +211,14 @@
             border: 1px dotted var(--dirt-brown);
             padding: 8px;
             border-radius: 10px;
-            background: rgba(0,0,0,0.05);
+            background: rgba(255,255,255,0.7); /* 讓字更清楚 */
             font-size: 0.75rem;
         }
         .cal-btn-group { display: flex; gap: 5px; margin-top: 5px; }
         .btn-cal { background: var(--deep-blue); color: white; border: none; padding: 5px; border-radius: 4px; font-size: 0.7rem; flex: 1; }
 
         #log {
-            background: var(--parchment-light);
+            background: rgba(255,255,255,0.8);
             color: var(--dirt-brown);
             font-size: 0.7rem;
             padding: 10px;
@@ -221,7 +229,7 @@
             border: 2px dashed var(--brass-border);
             margin-top: 20px;
             text-align: left;
-            opacity: 0.8;
+            margin-bottom: 100px; /* 底部留白給背景圖的公仔 */
         }
 
         @keyframes pulse-gold {
@@ -237,12 +245,11 @@
 
 <header>
     <h1>時空遺跡探測儀</h1>
-    <div class="subtitle">音效回饋系統 V3.0</div>
+    <div class="subtitle">FLL Challenge 特別版</div>
 </header>
 
 <div class="dashboard">
     <button id="btnSound" class="sound-toggle" title="切換音效">🔊</button>
-
     <div id="statusBadge" class="status-badge">儀器準備就緒</div>
 
     <div class="metrics-grid">
@@ -268,7 +275,7 @@
     </div>
 
     <div id="controls">
-        <button id="btnStart" class="btn-main">啟動探測器 (含音效)</button>
+        <button id="btnStart" class="btn-main">啟動探測器</button>
         <button id="btnStop" class="btn-main btn-stop hidden">中斷任務</button>
         <button id="btnRescan" class="btn-main btn-stop hidden">重新校準</button>
     </div>
@@ -282,7 +289,7 @@
     </div>
 </div>
 
-<div id="log">> 系統初始化完成。<br>> 點擊右上方喇叭可靜音。</div>
+<div id="log">> 系統初始化完成。<br>> 等待使用者指令。</div>
 
 <script>
     // === 1. 設定與參數 ===
@@ -295,89 +302,57 @@
 
     let bluetoothDevice;
     let smoothedRssi = -100;
-    let currentHeat = 0; // 全域變數，供音效系統讀取
+    let currentHeat = 0;
     let watchdogTimer;
     let isScanning = false;
 
-    // === 2. 音效系統 (Audio Engine) ===
+    // === 2. 音效系統 ===
     const AudioEngine = {
-        ctx: null,
-        isMuted: false,
-        nextBeepTime: 0,
-        timerId: null,
-
+        ctx: null, isMuted: false, nextBeepTime: 0, timerId: null,
         init: function() {
-            // 初始化音效環境 (瀏覽器要求必須在使用者點擊後才能啟動)
             if (!this.ctx) {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
                 this.ctx = new AudioContext();
             }
-            if (this.ctx.state === 'suspended') {
-                this.ctx.resume();
-            }
+            if (this.ctx.state === 'suspended') this.ctx.resume();
             this.startScheduler();
         },
-
         playBeep: function(freq, duration) {
             if (this.isMuted || !this.ctx) return;
-            
             const osc = this.ctx.createOscillator();
             const gain = this.ctx.createGain();
-
-            osc.type = 'sine'; // 正弦波 (聽起來像聲納/雷達)
-            osc.frequency.value = freq;
-            
-            osc.connect(gain);
-            gain.connect(this.ctx.destination);
-
+            osc.type = 'sine'; osc.frequency.value = freq;
+            osc.connect(gain); gain.connect(this.ctx.destination);
             osc.start();
-            // 聲音淡出，避免爆音
             gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
             osc.stop(this.ctx.currentTime + duration);
         },
-
         toggleMute: function() {
             this.isMuted = !this.isMuted;
             const btn = document.getElementById('btnSound');
             if(this.isMuted) {
-                btn.classList.add('muted');
-                btn.innerText = '🔇';
+                btn.classList.add('muted'); btn.innerText = '🔇';
             } else {
-                btn.classList.remove('muted');
-                btn.innerText = '🔊';
-                // 測試音
+                btn.classList.remove('muted'); btn.innerText = '🔊';
                 if(this.ctx) this.playBeep(600, 0.1);
             }
         },
-
         startScheduler: function() {
-            // 這裡使用遞迴的 setTimeout 來控制嗶嗶聲的節奏
             const schedule = () => {
                 if (isScanning && currentHeat > 0) {
-                    // === 聲音演算法 (重要工程點) ===
-                    // 1. 頻率 (Pitch): 熱度越高，音調越高 (400Hz ~ 1200Hz)
                     const pitch = 400 + (currentHeat * 8); 
-                    
-                    // 2. 間隔 (Interval): 熱度越高，嗶得越快 (1200ms ~ 100ms)
-                    // 使用 Math.max 確保最快不超過 80ms
                     let interval = 1200 - (currentHeat * 11);
                     interval = Math.max(80, interval);
-
                     this.playBeep(pitch, 0.1);
-                    
                     this.timerId = setTimeout(schedule, interval);
                 } else {
-                    // 如果沒在掃描或訊號太弱，就慢點檢查
                     this.timerId = setTimeout(schedule, 500);
                 }
             };
             schedule();
         },
-        
-        stop: function() {
-            if(this.timerId) clearTimeout(this.timerId);
-        }
+        stop: function() { if(this.timerId) clearTimeout(this.timerId); }
     };
 
     // === 3. UI 元素 ===
@@ -390,25 +365,21 @@
         btnStart: document.getElementById('btnStart'),
         btnStop: document.getElementById('btnStop'),
         btnRescan: document.getElementById('btnRescan'),
-        log: document.getElementById('log'),
-        debugCold: document.getElementById('debugCold'),
-        debugHot: document.getElementById('debugHot')
+        log: document.getElementById('log')
     };
 
     // === 4. 核心邏輯 ===
     async function startScan() {
-        // 啟動音效引擎 (必須在點擊事件中)
         AudioEngine.init();
-
         if (!navigator.bluetooth) {
-            alert("⚠️ 錯誤：您的瀏覽器不支援 Web Bluetooth (請用 Android Chrome)。");
+            alert("⚠️ 錯誤：請使用 Android Chrome 或 Bluefy 瀏覽器。");
             return;
         }
-
         try {
             updateStatus("啟動音效與掃描...", true);
             log("> 系統啟動...");
             
+            // 搜尋所有 micro:bit
             bluetoothDevice = await navigator.bluetooth.requestDevice({
                 filters: [{ namePrefix: "BBC micro:bit" }], 
                 optionalServices: [] 
@@ -431,19 +402,15 @@
             } else {
                  updateStatus("連線錯誤", false);
                  log(`> 錯誤：${error.message}`);
-                 if(error.message.includes("watchAdvertisements")) alert("請開啟 Chrome 實驗功能或使用 Android 手機。");
+                 if(error.message.includes("watchAdvertisements")) alert("請開啟 Chrome 實驗功能。");
             }
         }
     }
 
     function handleAdvertisement(event) {
         const rawRssi = event.rssi;
-        if (smoothedRssi === -100) {
-            smoothedRssi = rawRssi;
-        } else {
-            smoothedRssi = (CONFIG.SMOOTHING_FACTOR * rawRssi) + 
-                           ((1 - CONFIG.SMOOTHING_FACTOR) * smoothedRssi);
-        }
+        if (smoothedRssi === -100) smoothedRssi = rawRssi;
+        else smoothedRssi = (CONFIG.SMOOTHING_FACTOR * rawRssi) + ((1 - CONFIG.SMOOTHING_FACTOR) * smoothedRssi);
         updateUI(rawRssi, smoothedRssi);
         resetWatchdog();
     }
@@ -451,96 +418,48 @@
     function updateUI(raw, smooth) {
         let clamped = Math.max(CONFIG.RSSI_COLD, Math.min(smooth, CONFIG.RSSI_HOT));
         let heatPercent = ((clamped - CONFIG.RSSI_COLD) / (CONFIG.RSSI_HOT - CONFIG.RSSI_COLD)) * 100;
-        
-        // 更新全域變數，讓音效引擎讀取
         currentHeat = Math.round(heatPercent);
 
         ui.rssi.innerText = Math.round(smooth); 
         ui.heatVal.innerText = currentHeat;
         ui.heatBar.style.width = `${currentHeat}%`;
 
-        let text = "";
-        let color = "";
-        
-        if (currentHeat < 30) {
-            text = "❄️ 訊號微弱";
-            color = "var(--deep-blue)";
-        } else if (currentHeat < 75) {
-            text = "🌤️ 正在接近";
-            color = "var(--dirt-brown)";
-        } else {
-            text = "🔥 發現遺跡！";
-            color = "var(--relic-red)";
-        }
+        let text = "", color = "";
+        if (currentHeat < 30) { text = "❄️ 訊號微弱"; color = "var(--deep-blue)"; } 
+        else if (currentHeat < 75) { text = "🌤️ 正在接近"; color = "var(--dirt-brown)"; } 
+        else { text = "🔥 發現遺跡！"; color = "var(--relic-red)"; }
 
-        ui.feedback.innerText = text;
-        ui.feedback.style.color = color;
+        ui.feedback.innerText = text; ui.feedback.style.color = color;
     }
 
     function stopScan() {
-        if (bluetoothDevice && bluetoothDevice.watchingAdvertisements) {
-            bluetoothDevice.unwatchAdvertisements(); 
-        }
-        isScanning = false;
-        toggleButtons(false);
-        updateStatus("任務中斷", false);
-        ui.feedback.innerText = "等待指令";
-        ui.feedback.style.color = "var(--dirt-brown)";
-        clearTimeout(watchdogTimer);
-        currentHeat = 0; // 停止聲音
+        if (bluetoothDevice && bluetoothDevice.watchingAdvertisements) bluetoothDevice.unwatchAdvertisements(); 
+        isScanning = false; toggleButtons(false); updateStatus("任務中斷", false);
+        ui.feedback.innerText = "等待指令"; ui.feedback.style.color = "var(--dirt-brown)";
+        clearTimeout(watchdogTimer); currentHeat = 0;
     }
 
     function resetWatchdog() {
         clearTimeout(watchdogTimer);
         watchdogTimer = setTimeout(() => {
             if(isScanning) {
-                ui.feedback.innerText = "❓ 訊號丟失";
-                ui.feedback.style.color = "var(--dirt-brown)";
-                ui.rssi.innerText = "---";
-                ui.heatBar.style.width = "0%";
-                currentHeat = 0; // 停止聲音
-                log("> 警告：目標訊號消失");
+                ui.feedback.innerText = "❓ 訊號丟失"; ui.rssi.innerText = "---";
+                ui.heatBar.style.width = "0%"; currentHeat = 0; log("> 警告：目標訊號消失");
             }
         }, CONFIG.LOST_TIMEOUT);
     }
 
-    // === 輔助與校正 ===
-    function updateStatus(msg, active) {
-        ui.badge.innerText = msg;
-        active ? ui.badge.classList.add('active') : ui.badge.classList.remove('active');
-    }
-
+    // === 輔助 ===
+    function updateStatus(msg, active) { ui.badge.innerText = msg; active ? ui.badge.classList.add('active') : ui.badge.classList.remove('active'); }
     function toggleButtons(running) {
-        if (running) {
-            ui.btnStart.classList.add('hidden');
-            ui.btnStop.classList.remove('hidden');
-            ui.btnRescan.classList.remove('hidden');
-        } else {
-            ui.btnStart.classList.remove('hidden');
-            ui.btnStop.classList.add('hidden');
-            ui.btnRescan.classList.add('hidden');
-        }
+        if (running) { ui.btnStart.classList.add('hidden'); ui.btnStop.classList.remove('hidden'); ui.btnRescan.classList.remove('hidden'); } 
+        else { ui.btnStart.classList.remove('hidden'); ui.btnStop.classList.add('hidden'); ui.btnRescan.classList.add('hidden'); }
     }
+    function log(msg) { ui.log.innerHTML += `> ${msg}<br>`; ui.log.scrollTop = ui.log.scrollHeight; }
+    function setCloseLimit() { if(smoothedRssi > -100) { CONFIG.RSSI_HOT = Math.round(smoothedRssi); alert(`已設定最近 (Hot): ${CONFIG.RSSI_HOT}`); } }
+    function setFarLimit() { if(smoothedRssi > -100) { CONFIG.RSSI_COLD = Math.round(smoothedRssi); alert(`已設定最遠 (Cold): ${CONFIG.RSSI_COLD}`); } }
 
-    function log(msg) {
-        ui.log.innerHTML += `> ${msg}<br>`;
-        ui.log.scrollTop = ui.log.scrollHeight;
-    }
-
-    function setCloseLimit() {
-        if(smoothedRssi > -100) {
-            CONFIG.RSSI_HOT = Math.round(smoothedRssi);
-            alert(`已設定目前位置為「最近」(Hot)\n數值: ${CONFIG.RSSI_HOT}`);
-        }
-    }
-    function setFarLimit() {
-        if(smoothedRssi > -100) {
-            CONFIG.RSSI_COLD = Math.round(smoothedRssi);
-            alert(`已設定目前位置為「最遠」(Cold)\n數值: ${CONFIG.RSSI_COLD}`);
-        }
-    }
-
-    // 事件綁定
+    // 事件
     ui.btnStart.addEventListener('click', startScan);
     ui.btnStop.addEventListener('click', stopScan);
     ui.btnRescan.addEventListener('click', () => { stopScan(); setTimeout(startScan, 500); });
