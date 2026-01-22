@@ -1,21 +1,7 @@
-<!DOCTYPE html>
-<html lang="zh-TW">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#ffffff">
-
-    <title>時空遺跡探測儀 (FLL特別版)</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Special+Elite&display=swap" rel="stylesheet">
-    
-    <style>
-        /* ================= CSS 樣式區 ================= */
+<style>
+        /* ================= CSS 樣式區 (FLL 響應式修正版) ================= */
         :root {
-            --parchment-light: rgba(253, 246, 227, 0.9); /* 稍微半透明的羊皮紙色 */
+            --parchment-light: rgba(253, 246, 227, 0.85); /* 稍微透明，讓背景透出來 */
             --dirt-brown: #5a4632;
             --ancient-gold: #d4af37;
             --relic-red: #c0392b;
@@ -27,84 +13,104 @@
             font-family: 'Special Elite', 'Courier New', monospace;
             color: var(--dirt-brown);
             margin: 0;
-            padding: 15px;
+            padding: 0; /* 清除預設內距 */
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
+            
+            /* === 背景圖設定 (預設電腦版) === */
+            background-color: #ffffff; 
+            background-image: url('bg.jpg'); 
+            background-repeat: no-repeat;
+            background-attachment: fixed; /* 背景固定不動 */
+            background-position: center bottom; /* 對齊底部中間 */
+            background-size: cover; /* 電腦版：填滿整個畫面 */
+        }
 
-            /* === 關鍵修改：背景圖片設定 === */
-            background-color: #ffffff; /* 圖片載入前的底色 */
-            background-image: url('bg.jpg'); /* 讀取您上傳的 bg.jpg */
-            background-size: cover; /* 讓圖片填滿整個螢幕 */
-            background-position: center bottom; /* 重點：對齊底部！讓下方的公仔露出來 */
-            background-repeat: no-repeat; /* 不要重複 */
-            background-attachment: fixed; /* 讓背景固定，滑動時才不會跑掉 */
+        /* === 📱 手機版專用修正 (關鍵修改) === */
+        @media (max-width: 768px) {
+            body {
+                /* 手機版：強制讓圖片寬度剛好 100%，高度自動，這樣角色就不會被切掉 */
+                background-size: 100% auto; 
+                /* 確保圖片黏在螢幕最下方 */
+                background-position: center bottom;
+                /* 如果圖片上方有留白，用白色填補 */
+                background-color: #ffffff; 
+            }
+            
+            /* 讓 UI 不要蓋住下面的公仔，增加底部留白 */
+            .dashboard {
+                margin-bottom: 40vh !important; /* vh = 螢幕高度的百分比 */
+            }
         }
 
         header {
             text-align: center;
-            margin-bottom: 20px;
-            /* 為了讓標題在背景圖上更清楚，加一點背板 */
-            background: rgba(255, 255, 255, 0.8); 
+            margin-top: 20px;
+            margin-bottom: 15px;
+            background: rgba(255, 255, 255, 0.9); 
             padding: 10px 20px;
             border-radius: 10px;
             border: 2px solid var(--brass-border);
-            width: 90%;
+            width: 85%;
             max-width: 450px;
-            margin-top: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            z-index: 10; /* 確保浮在最上層 */
         }
 
         h1 {
             font-family: 'Cinzel Decorative', cursive;
             margin: 0;
-            font-size: 1.6rem;
+            font-size: 1.5rem; /* 手機字體稍微調小一點 */
             color: var(--dirt-brown);
         }
 
         .subtitle {
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             color: var(--brass-border);
             font-weight: bold;
         }
 
         .dashboard {
-            /* 這裡設定半透明，讓背景圖可以透出來一點點 */
             background: var(--parchment-light);
-            border: 4px solid var(--brass-border);
+            border: 3px solid var(--brass-border);
             border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
             padding: 20px;
-            width: 90%;
+            width: 88%; /* 手機上寬度稍微縮一點 */
             max-width: 400px;
             text-align: center;
             position: relative;
-            /* 稍微往上推一點，留空間給下面的可愛公仔 */
+            backdrop-filter: blur(5px);
+            z-index: 10;
+            
+            /* 預設底部留白 (電腦版) */
             margin-bottom: 50px; 
-            backdrop-filter: blur(5px); /* 磨砂玻璃特效，增加質感 */
         }
 
+        /* 裝飾鉚釘 */
         .dashboard::before, .dashboard::after {
             content: "•";
             position: absolute;
             color: var(--brass-border);
-            font-size: 2rem;
+            font-size: 1.5rem;
             line-height: 0;
-            top: 15px;
+            top: 10px;
         }
-        .dashboard::before { left: 15px; }
-        .dashboard::after { right: 15px; }
+        .dashboard::before { left: 10px; }
+        .dashboard::after { right: 10px; }
 
         .status-badge {
             display: inline-block;
             background: #fff;
             border: 2px dashed var(--brass-border);
             color: var(--dirt-brown);
-            padding: 5px 15px;
-            border-radius: 30px;
-            font-size: 0.9rem;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
             font-weight: bold;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         .status-badge.active {
             border-style: solid;
@@ -112,39 +118,36 @@
             animation: pulse-gold 2s infinite;
         }
 
-        /* 音效按鈕 */
         .sound-toggle {
             position: absolute;
             top: 10px;
             right: 10px;
-            background: rgba(255,255,255,0.5);
+            background: rgba(255,255,255,0.6);
             border: 2px solid var(--dirt-brown);
             border-radius: 50%;
-            width: 35px;
-            height: 35px;
+            width: 32px;
+            height: 32px;
             cursor: pointer;
-            font-size: 1.2rem;
+            font-size: 1rem;
             display: flex;
             align-items: center;
             justify-content: center;
             color: var(--dirt-brown);
-            transition: all 0.2s;
         }
-        .sound-toggle.muted { opacity: 0.5; background: #ccc; }
+        .sound-toggle.muted { opacity: 0.6; background: #ddd; }
 
         .metrics-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 20px;
+            gap: 10px;
+            margin-bottom: 15px;
         }
 
         .metric-box {
-            background: rgba(255,255,255,0.6);
-            padding: 10px;
-            border-radius: 50%;
-            border: 3px solid var(--brass-border);
-            aspect-ratio: 1 / 1;
+            background: rgba(255,255,255,0.7);
+            padding: 8px;
+            border-radius: 15px; /* 改成圓角矩形比較省空間 */
+            border: 2px solid var(--brass-border);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -152,16 +155,21 @@
         }
 
         .metric-value {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             font-weight: bold;
             color: var(--dirt-brown);
         }
+        
+        .metric-label {
+            font-size: 0.7rem;
+            color: #888;
+        }
 
         .message-box {
-            min-height: 50px;
-            font-size: 1.3rem;
+            min-height: 40px;
+            font-size: 1.2rem;
             font-weight: bold;
-            margin: 15px 0;
+            margin: 10px 0;
             font-family: 'Cinzel Decorative', cursive;
             color: var(--dirt-brown);
             display: flex;
@@ -169,17 +177,17 @@
             justify-content: center;
             border-top: 1px solid rgba(90, 70, 50, 0.2);
             border-bottom: 1px solid rgba(90, 70, 50, 0.2);
-            padding: 10px 0;
+            padding: 8px 0;
         }
 
         .progress-track {
             background: #443322;
-            height: 25px;
-            border-radius: 15px;
+            height: 20px;
+            border-radius: 10px;
             overflow: hidden;
-            border: 3px solid var(--brass-border);
+            border: 2px solid var(--brass-border);
             position: relative;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         .progress-fill {
@@ -193,12 +201,12 @@
         .btn-main {
             background: var(--dirt-brown);
             color: #fff;
-            border: 3px solid var(--brass-border);
-            padding: 12px 20px;
+            border: 2px solid var(--brass-border);
+            padding: 12px;
             font-size: 1rem;
             font-weight: bold;
             font-family: 'Special Elite', cursive;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
             width: 100%;
             box-shadow: 0 4px 0 #3a2c1f;
@@ -207,264 +215,39 @@
         .btn-stop { background: var(--relic-red); margin-top: 10px; box-shadow: 0 4px 0 #8a291f; }
 
         .calibration-area {
-            margin-top: 20px;
+            margin-top: 15px;
             border: 1px dotted var(--dirt-brown);
-            padding: 8px;
-            border-radius: 10px;
-            background: rgba(255,255,255,0.7); /* 讓字更清楚 */
-            font-size: 0.75rem;
+            padding: 5px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.8);
+            font-size: 0.7rem;
         }
         .cal-btn-group { display: flex; gap: 5px; margin-top: 5px; }
-        .btn-cal { background: var(--deep-blue); color: white; border: none; padding: 5px; border-radius: 4px; font-size: 0.7rem; flex: 1; }
+        .btn-cal { background: var(--deep-blue); color: white; border: none; padding: 6px; border-radius: 4px; font-size: 0.7rem; flex: 1; }
 
         #log {
-            background: rgba(255,255,255,0.8);
+            background: rgba(255,255,255,0.9);
             color: var(--dirt-brown);
             font-size: 0.7rem;
             padding: 10px;
-            width: 90%;
+            width: 88%;
             max-width: 400px;
-            height: 80px;
+            height: 60px; /* Log 縮短一點 */
             overflow-y: auto;
             border: 2px dashed var(--brass-border);
-            margin-top: 20px;
+            margin-top: 15px;
             text-align: left;
-            margin-bottom: 100px; /* 底部留白給背景圖的公仔 */
+            border-radius: 5px;
+            
+            /* 在手機上不需要這個留白了，因為我們用 margin-bottom 控制了 Dashboard */
+            display: block; 
         }
 
         @keyframes pulse-gold {
             0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.6); }
-            70% { box-shadow: 0 0 0 15px rgba(212, 175, 55, 0); }
+            70% { box-shadow: 0 0 0 10px rgba(212, 175, 55, 0); }
             100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
         }
 
         .hidden { display: none; }
     </style>
-</head>
-<body>
-
-<header>
-    <h1>時空遺跡探測儀</h1>
-    <div class="subtitle">FLL Challenge 特別版</div>
-</header>
-
-<div class="dashboard">
-    <button id="btnSound" class="sound-toggle" title="切換音效">🔊</button>
-    <div id="statusBadge" class="status-badge">儀器準備就緒</div>
-
-    <div class="metrics-grid">
-        <div class="metric-box">
-            <div class="metric-label">訊號 RSSI</div>
-            <div class="metric-value" id="rssiValue">---</div>
-        </div>
-        <div class="metric-box">
-            <div class="metric-label">共鳴深度</div>
-            <div style="display:flex; align-items:baseline;">
-                <div class="metric-value" id="heatValue">0</div>
-                <span style="font-size:1rem;">%</span>
-            </div>
-        </div>
-    </div>
-
-    <div class="message-box" id="mainFeedback">等待啟動...</div>
-
-    <div class="heat-container">
-        <div class="progress-track">
-            <div class="progress-fill" id="heatBar"></div>
-        </div>
-    </div>
-
-    <div id="controls">
-        <button id="btnStart" class="btn-main">啟動探測器</button>
-        <button id="btnStop" class="btn-main btn-stop hidden">中斷任務</button>
-        <button id="btnRescan" class="btn-main btn-stop hidden">重新校準</button>
-    </div>
-</div>
-
-<div class="calibration-area">
-    <div style="font-weight:bold;">🔧 工程校正 (Calibration)</div>
-    <div class="cal-btn-group">
-        <button class="btn-cal" onclick="setCloseLimit()">設為最近 (Hot)</button>
-        <button class="btn-cal" onclick="setFarLimit()">設為最遠 (Cold)</button>
-    </div>
-</div>
-
-<div id="log">> 系統初始化完成。<br>> 等待使用者指令。</div>
-
-<script>
-    // === 1. 設定與參數 ===
-    const CONFIG = {
-        RSSI_COLD: -95,
-        RSSI_HOT: -50, 
-        SMOOTHING_FACTOR: 0.1, 
-        LOST_TIMEOUT: 3000
-    };
-
-    let bluetoothDevice;
-    let smoothedRssi = -100;
-    let currentHeat = 0;
-    let watchdogTimer;
-    let isScanning = false;
-
-    // === 2. 音效系統 ===
-    const AudioEngine = {
-        ctx: null, isMuted: false, nextBeepTime: 0, timerId: null,
-        init: function() {
-            if (!this.ctx) {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                this.ctx = new AudioContext();
-            }
-            if (this.ctx.state === 'suspended') this.ctx.resume();
-            this.startScheduler();
-        },
-        playBeep: function(freq, duration) {
-            if (this.isMuted || !this.ctx) return;
-            const osc = this.ctx.createOscillator();
-            const gain = this.ctx.createGain();
-            osc.type = 'sine'; osc.frequency.value = freq;
-            osc.connect(gain); gain.connect(this.ctx.destination);
-            osc.start();
-            gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
-            osc.stop(this.ctx.currentTime + duration);
-        },
-        toggleMute: function() {
-            this.isMuted = !this.isMuted;
-            const btn = document.getElementById('btnSound');
-            if(this.isMuted) {
-                btn.classList.add('muted'); btn.innerText = '🔇';
-            } else {
-                btn.classList.remove('muted'); btn.innerText = '🔊';
-                if(this.ctx) this.playBeep(600, 0.1);
-            }
-        },
-        startScheduler: function() {
-            const schedule = () => {
-                if (isScanning && currentHeat > 0) {
-                    const pitch = 400 + (currentHeat * 8); 
-                    let interval = 1200 - (currentHeat * 11);
-                    interval = Math.max(80, interval);
-                    this.playBeep(pitch, 0.1);
-                    this.timerId = setTimeout(schedule, interval);
-                } else {
-                    this.timerId = setTimeout(schedule, 500);
-                }
-            };
-            schedule();
-        },
-        stop: function() { if(this.timerId) clearTimeout(this.timerId); }
-    };
-
-    // === 3. UI 元素 ===
-    const ui = {
-        badge: document.getElementById('statusBadge'),
-        feedback: document.getElementById('mainFeedback'),
-        rssi: document.getElementById('rssiValue'),
-        heatVal: document.getElementById('heatValue'),
-        heatBar: document.getElementById('heatBar'),
-        btnStart: document.getElementById('btnStart'),
-        btnStop: document.getElementById('btnStop'),
-        btnRescan: document.getElementById('btnRescan'),
-        log: document.getElementById('log')
-    };
-
-    // === 4. 核心邏輯 ===
-    async function startScan() {
-        AudioEngine.init();
-        if (!navigator.bluetooth) {
-            alert("⚠️ 錯誤：請使用 Android Chrome 或 Bluefy 瀏覽器。");
-            return;
-        }
-        try {
-            updateStatus("啟動音效與掃描...", true);
-            log("> 系統啟動...");
-            
-            // 搜尋所有 micro:bit
-            bluetoothDevice = await navigator.bluetooth.requestDevice({
-                filters: [{ namePrefix: "BBC micro:bit" }], 
-                optionalServices: [] 
-            });
-
-            const deviceName = bluetoothDevice.name || "未知目標";
-            log(`> 鎖定目標：${deviceName}`);
-            updateStatus("訊號鎖定", true);
-            
-            bluetoothDevice.addEventListener('advertisementreceived', handleAdvertisement);
-            await bluetoothDevice.watchAdvertisements();
-            
-            isScanning = true;
-            toggleButtons(true);
-            smoothedRssi = -100; 
-
-        } catch (error) {
-            if (error.name === 'NotFoundError') {
-                 updateStatus("操作取消", false);
-            } else {
-                 updateStatus("連線錯誤", false);
-                 log(`> 錯誤：${error.message}`);
-                 if(error.message.includes("watchAdvertisements")) alert("請開啟 Chrome 實驗功能。");
-            }
-        }
-    }
-
-    function handleAdvertisement(event) {
-        const rawRssi = event.rssi;
-        if (smoothedRssi === -100) smoothedRssi = rawRssi;
-        else smoothedRssi = (CONFIG.SMOOTHING_FACTOR * rawRssi) + ((1 - CONFIG.SMOOTHING_FACTOR) * smoothedRssi);
-        updateUI(rawRssi, smoothedRssi);
-        resetWatchdog();
-    }
-
-    function updateUI(raw, smooth) {
-        let clamped = Math.max(CONFIG.RSSI_COLD, Math.min(smooth, CONFIG.RSSI_HOT));
-        let heatPercent = ((clamped - CONFIG.RSSI_COLD) / (CONFIG.RSSI_HOT - CONFIG.RSSI_COLD)) * 100;
-        currentHeat = Math.round(heatPercent);
-
-        ui.rssi.innerText = Math.round(smooth); 
-        ui.heatVal.innerText = currentHeat;
-        ui.heatBar.style.width = `${currentHeat}%`;
-
-        let text = "", color = "";
-        if (currentHeat < 30) { text = "❄️ 訊號微弱"; color = "var(--deep-blue)"; } 
-        else if (currentHeat < 75) { text = "🌤️ 正在接近"; color = "var(--dirt-brown)"; } 
-        else { text = "🔥 發現遺跡！"; color = "var(--relic-red)"; }
-
-        ui.feedback.innerText = text; ui.feedback.style.color = color;
-    }
-
-    function stopScan() {
-        if (bluetoothDevice && bluetoothDevice.watchingAdvertisements) bluetoothDevice.unwatchAdvertisements(); 
-        isScanning = false; toggleButtons(false); updateStatus("任務中斷", false);
-        ui.feedback.innerText = "等待指令"; ui.feedback.style.color = "var(--dirt-brown)";
-        clearTimeout(watchdogTimer); currentHeat = 0;
-    }
-
-    function resetWatchdog() {
-        clearTimeout(watchdogTimer);
-        watchdogTimer = setTimeout(() => {
-            if(isScanning) {
-                ui.feedback.innerText = "❓ 訊號丟失"; ui.rssi.innerText = "---";
-                ui.heatBar.style.width = "0%"; currentHeat = 0; log("> 警告：目標訊號消失");
-            }
-        }, CONFIG.LOST_TIMEOUT);
-    }
-
-    // === 輔助 ===
-    function updateStatus(msg, active) { ui.badge.innerText = msg; active ? ui.badge.classList.add('active') : ui.badge.classList.remove('active'); }
-    function toggleButtons(running) {
-        if (running) { ui.btnStart.classList.add('hidden'); ui.btnStop.classList.remove('hidden'); ui.btnRescan.classList.remove('hidden'); } 
-        else { ui.btnStart.classList.remove('hidden'); ui.btnStop.classList.add('hidden'); ui.btnRescan.classList.add('hidden'); }
-    }
-    function log(msg) { ui.log.innerHTML += `> ${msg}<br>`; ui.log.scrollTop = ui.log.scrollHeight; }
-    function setCloseLimit() { if(smoothedRssi > -100) { CONFIG.RSSI_HOT = Math.round(smoothedRssi); alert(`已設定最近 (Hot): ${CONFIG.RSSI_HOT}`); } }
-    function setFarLimit() { if(smoothedRssi > -100) { CONFIG.RSSI_COLD = Math.round(smoothedRssi); alert(`已設定最遠 (Cold): ${CONFIG.RSSI_COLD}`); } }
-
-    // 事件
-    ui.btnStart.addEventListener('click', startScan);
-    ui.btnStop.addEventListener('click', stopScan);
-    ui.btnRescan.addEventListener('click', () => { stopScan(); setTimeout(startScan, 500); });
-    document.getElementById('btnSound').addEventListener('click', () => AudioEngine.toggleMute());
-
-</script>
-</body>
-</html>
