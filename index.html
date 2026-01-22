@@ -1,7 +1,24 @@
-<style>
-        /* ================= CSS 樣式區 (FLL 響應式修正版) ================= */
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2822/2822306.png">
+    <link rel="icon" sizes="192x192" href="https://cdn-icons-png.flaticon.com/512/2822/2822306.png">
+
+    <title>時空遺跡探測儀 (FLL終極版)</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Special+Elite&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ================= CSS 樣式區 ================= */
         :root {
-            --parchment-light: rgba(253, 246, 227, 0.85); /* 稍微透明，讓背景透出來 */
+            --parchment-light: rgba(253, 246, 227, 0.85); /* 半透明羊皮紙色 */
             --dirt-brown: #5a4632;
             --ancient-gold: #d4af37;
             --relic-red: #c0392b;
@@ -13,35 +30,33 @@
             font-family: 'Special Elite', 'Courier New', monospace;
             color: var(--dirt-brown);
             margin: 0;
-            padding: 0; /* 清除預設內距 */
+            padding: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
             
-            /* === 背景圖設定 (預設電腦版) === */
+            /* === 背景圖片設定 === */
             background-color: #ffffff; 
-            background-image: url('bg.jpg'); 
+            background-image: url('bg.jpg'); /* 讀取您的圖片 */
             background-repeat: no-repeat;
-            background-attachment: fixed; /* 背景固定不動 */
-            background-position: center bottom; /* 對齊底部中間 */
-            background-size: cover; /* 電腦版：填滿整個畫面 */
+            background-attachment: fixed;
+            background-position: center bottom; /* 對齊底部 */
+            background-size: cover; /* 電腦版填滿 */
         }
 
-        /* === 📱 手機版專用修正 (關鍵修改) === */
+        /* === 📱 手機版響應式修正 (關鍵！) === */
         @media (max-width: 768px) {
             body {
-                /* 手機版：強制讓圖片寬度剛好 100%，高度自動，這樣角色就不會被切掉 */
-                background-size: 100% auto; 
-                /* 確保圖片黏在螢幕最下方 */
+                /* 強制寬度 100%，高度自動，確保底部公仔不被切掉 */
+                background-size: 100% auto;
                 background-position: center bottom;
-                /* 如果圖片上方有留白，用白色填補 */
                 background-color: #ffffff; 
             }
             
-            /* 讓 UI 不要蓋住下面的公仔，增加底部留白 */
+            /* 把操作面板往上推，留空間給背景圖的公仔 */
             .dashboard {
-                margin-bottom: 40vh !important; /* vh = 螢幕高度的百分比 */
+                margin-bottom: 40vh !important; 
             }
         }
 
@@ -56,13 +71,13 @@
             width: 85%;
             max-width: 450px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            z-index: 10; /* 確保浮在最上層 */
+            z-index: 10;
         }
 
         h1 {
             font-family: 'Cinzel Decorative', cursive;
             margin: 0;
-            font-size: 1.5rem; /* 手機字體稍微調小一點 */
+            font-size: 1.5rem;
             color: var(--dirt-brown);
         }
 
@@ -72,21 +87,20 @@
             font-weight: bold;
         }
 
+        /* 儀表板主體 */
         .dashboard {
             background: var(--parchment-light);
             border: 3px solid var(--brass-border);
             border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
             padding: 20px;
-            width: 88%; /* 手機上寬度稍微縮一點 */
+            width: 88%;
             max-width: 400px;
             text-align: center;
             position: relative;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(5px); /* 毛玻璃特效 */
             z-index: 10;
-            
-            /* 預設底部留白 (電腦版) */
-            margin-bottom: 50px; 
+            margin-bottom: 50px; /* 電腦版預設留白 */
         }
 
         /* 裝飾鉚釘 */
@@ -118,6 +132,7 @@
             animation: pulse-gold 2s infinite;
         }
 
+        /* 音效開關按鈕 */
         .sound-toggle {
             position: absolute;
             top: 10px;
@@ -146,7 +161,7 @@
         .metric-box {
             background: rgba(255,255,255,0.7);
             padding: 8px;
-            border-radius: 15px; /* 改成圓角矩形比較省空間 */
+            border-radius: 15px;
             border: 2px solid var(--brass-border);
             display: flex;
             flex-direction: column;
@@ -232,22 +247,15 @@
             padding: 10px;
             width: 88%;
             max-width: 400px;
-            height: 60px; /* Log 縮短一點 */
+            height: 60px;
             overflow-y: auto;
             border: 2px dashed var(--brass-border);
             margin-top: 15px;
             text-align: left;
             border-radius: 5px;
-            
-            /* 在手機上不需要這個留白了，因為我們用 margin-bottom 控制了 Dashboard */
-            display: block; 
+            display: block; /* 手機版顯示 */
         }
 
         @keyframes pulse-gold {
             0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.6); }
-            70% { box-shadow: 0 0 0 10px rgba(212, 175, 55, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
-        }
-
-        .hidden { display: none; }
-    </style>
+            70% { box-
