@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -11,14 +11,14 @@
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2822/2822306.png">
     <link rel="icon" sizes="192x192" href="https://cdn-icons-png.flaticon.com/512/2822/2822306.png">
 
-    <title>時空遺跡探測儀 (抗縮放版)</title>
+    <title>時空遺跡探測儀 (防跑版)</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Special+Elite&display=swap" rel="stylesheet">
     
     <style>
-        /* ================= CSS 修正區 ================= */
+        /* ================= CSS 重構區 ================= */
         :root {
-            --parchment-light: rgba(253, 246, 227, 0.9); /* 稍微不透明一點，增加閱讀性 */
+            --parchment-light: rgba(253, 246, 227, 0.95); 
             --dirt-brown: #5a4632;
             --ancient-gold: #d4af37;
             --relic-red: #c0392b;
@@ -26,48 +26,53 @@
             --brass-border: #b58e46;
         }
 
-        html {
-            height: 100%;
-        }
-
         body {
             font-family: 'Special Elite', 'Courier New', monospace;
             color: var(--dirt-brown);
             margin: 0;
             padding: 0;
-            
-            /* === 版面配置核心修正 === */
+            /* 讓身體至少跟視窗一樣高 */
+            min-height: 100vh;
+            background-color: #ffffff;
+            /* 這裡不設背景圖了，改用獨立圖層 */
+        }
+
+        /* === 關鍵 1: 獨立的背景圖層 (Layer -1) === */
+        /* 這是一個「隱形」的 div，專門用來放背景圖 */
+        /* 它會永遠固定在螢幕底部，不會影響上面的按鈕 */
+        #bg-layer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60vh; /* 圖片佔螢幕高度的 60% */
+            background-image: url('bg.jpg');
+            background-repeat: no-repeat;
+            background-position: center bottom;
+            background-size: contain; /* 確保整張圖都看得到 */
+            z-index: -1; /* 放在最底層 */
+            pointer-events: none; /* 讓點擊穿透它 */
+        }
+
+        /* === 關鍵 2: 內容容器 (Layer 1) === */
+        /* 這裡放所有的按鈕和儀表板 */
+        #content-layer {
+            position: relative;
+            z-index: 10; /* 浮在背景圖上面 */
+            width: 100%;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start; /* 從上面開始排，不要硬置中 */
-            
-            min-height: 100vh; /* 最小高度為螢幕高度 */
-            
-            /* === 背景圖片設定 (抗跑版關鍵) === */
-            background-color: #ffffff; 
-            background-image: url('bg.jpg'); 
-            background-repeat: no-repeat;
-            
-            /* 讓背景圖永遠固定在視窗底部，不會跟著捲動跑掉 */
-            background-attachment: fixed; 
-            background-position: center bottom;
-            
-            /* 讓圖片寬度剛好，高度自動 */
-            background-size: 100% auto; 
-            
-            /* === 關鍵：底部安全氣囊 === */
-            /* 這裡預留 40% 的螢幕高度給背景圖的公仔 */
-            /* 如果網頁放大，內容會往上長或出現捲軸，不會蓋到這裡 */
-            padding-bottom: 40vh; 
-            box-sizing: border-box; 
+            justify-content: flex-start; /* 從上面開始排 */
+            padding-bottom: 200px; /* 底部留白，讓使用者可以滑到最下面看到公仔 */
         }
 
-        /* 電腦版時，背景圖可以用 cover 填滿 */
-        @media (min-width: 769px) {
-            body {
-                background-size: cover; 
-                padding-bottom: 100px; /* 電腦版留白少一點 */
+        /* 手機版修正：背景圖調整 */
+        @media (max-width: 768px) {
+            #bg-layer {
+                height: 50vh; /* 手機上圖片佔 50% 就好 */
+                background-size: 100% auto; /* 寬度撐滿 */
             }
         }
 
@@ -82,8 +87,6 @@
             width: 85%;
             max-width: 450px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            z-index: 10;
-            flex-shrink: 0; /* 禁止壓縮標題 */
         }
 
         h1 {
@@ -109,12 +112,8 @@
             max-width: 400px;
             text-align: center;
             position: relative;
-            backdrop-filter: blur(5px);
-            z-index: 10;
-            
-            /* 移除原本的 margin-bottom Hack */
-            margin-bottom: 20px; 
-            flex-shrink: 0; /* 禁止壓縮儀表板 */
+            /* 這裡不用留白了，因為我們有 content-layer 控制 */
+            margin-bottom: 20px;
         }
 
         /* 裝飾鉚釘 */
@@ -249,10 +248,8 @@
             border-radius: 8px;
             background: rgba(255,255,255,0.8);
             font-size: 0.7rem;
-            /* 讓校正區在需要時可以捲動，但不影響整體 */
             width: 88%; 
             max-width: 400px;
-            flex-shrink: 0;
         }
         .cal-btn-group { display: flex; gap: 5px; margin-top: 5px; }
         .btn-cal { background: var(--deep-blue); color: white; border: none; padding: 6px; border-radius: 4px; font-size: 0.7rem; flex: 1; }
@@ -271,7 +268,6 @@
             text-align: left;
             border-radius: 5px;
             display: block;
-            flex-shrink: 0;
         }
 
         @keyframes pulse-gold {
@@ -285,53 +281,57 @@
 </head>
 <body>
 
-<header>
-    <h1>時空遺跡探測儀</h1>
-    <div class="subtitle">FLL Challenge 特別版</div>
-</header>
+<div id="bg-layer"></div>
 
-<div class="dashboard">
-    <button id="btnSound" class="sound-toggle" title="切換音效">🔊</button>
-    <div id="statusBadge" class="status-badge">儀器準備就緒</div>
+<div id="content-layer">
+    <header>
+        <h1>時空遺跡探測儀</h1>
+        <div class="subtitle">FLL Challenge 特別版</div>
+    </header>
 
-    <div class="metrics-grid">
-        <div class="metric-box">
-            <div class="metric-label">訊號 RSSI</div>
-            <div class="metric-value" id="rssiValue">---</div>
-        </div>
-        <div class="metric-box">
-            <div class="metric-label">共鳴深度</div>
-            <div style="display:flex; align-items:baseline;">
-                <div class="metric-value" id="heatValue">0</div>
-                <span style="font-size:1rem;">%</span>
+    <div class="dashboard">
+        <button id="btnSound" class="sound-toggle" title="切換音效">🔊</button>
+        <div id="statusBadge" class="status-badge">儀器準備就緒</div>
+
+        <div class="metrics-grid">
+            <div class="metric-box">
+                <div class="metric-label">訊號 RSSI</div>
+                <div class="metric-value" id="rssiValue">---</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-label">共鳴深度</div>
+                <div style="display:flex; align-items:baseline;">
+                    <div class="metric-value" id="heatValue">0</div>
+                    <span style="font-size:1rem;">%</span>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="message-box" id="mainFeedback">等待啟動...</div>
+        <div class="message-box" id="mainFeedback">等待啟動...</div>
 
-    <div class="heat-container">
-        <div class="progress-track">
-            <div class="progress-fill" id="heatBar"></div>
+        <div class="heat-container">
+            <div class="progress-track">
+                <div class="progress-fill" id="heatBar"></div>
+            </div>
+        </div>
+
+        <div id="controls">
+            <button id="btnStart" class="btn-main">啟動探測器</button>
+            <button id="btnStop" class="btn-main btn-stop hidden">中斷任務</button>
+            <button id="btnRescan" class="btn-main btn-stop hidden">重新校準</button>
         </div>
     </div>
 
-    <div id="controls">
-        <button id="btnStart" class="btn-main">啟動探測器</button>
-        <button id="btnStop" class="btn-main btn-stop hidden">中斷任務</button>
-        <button id="btnRescan" class="btn-main btn-stop hidden">重新校準</button>
+    <div class="calibration-area">
+        <div style="font-weight:bold;">🔧 工程校正 (Calibration)</div>
+        <div class="cal-btn-group">
+            <button class="btn-cal" onclick="setCloseLimit()">設為最近 (Hot)</button>
+            <button class="btn-cal" onclick="setFarLimit()">設為最遠 (Cold)</button>
+        </div>
     </div>
-</div>
 
-<div class="calibration-area">
-    <div style="font-weight:bold;">🔧 工程校正 (Calibration)</div>
-    <div class="cal-btn-group">
-        <button class="btn-cal" onclick="setCloseLimit()">設為最近 (Hot)</button>
-        <button class="btn-cal" onclick="setFarLimit()">設為最遠 (Cold)</button>
-    </div>
+    <div id="log">> 系統初始化完成。<br>> 請點擊啟動並選取 micro:bit。</div>
 </div>
-
-<div id="log">> 系統初始化完成。<br>> 請點擊啟動並選取 micro:bit。</div>
 
 <script>
     // === 1. 設定與參數 ===
